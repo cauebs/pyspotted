@@ -1,5 +1,5 @@
 import pandas as pd
-import textwrap as tw
+import textwrap
 from PIL import Image, ImageDraw, ImageFont
 from os import path
 
@@ -27,19 +27,20 @@ def generate_images(input_file, output_dir):
         save_image(number, text, path.join(output_dir, f'{number}.png'))
 
 
-def save_image(number, text, filename):
-    image = Image.open('bg.jpg').convert('RGBA')
+def save_image(number, text, filename, background='bg.jpg', font_size=30,
+               font_face='Merienda-Bold.ttf', text_color=(51, 51, 51, 255),
+               column_limit=42, number_pos=(50, 100), text_y_offset=210):
+    image = Image.open(background).convert('RGBA')
 
     draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype('Merienda-Bold.ttf', 30)
-    dark_gray = (51, 51, 51, 255)
+    font = ImageFont.truetype(font_face, font_size)
 
-    text = tw.fill(f'"{text.strip()}"', 42)
+    text = textwrap.fill(f'"{text.strip()}"', column_limit)
 
     text_width, text_height = draw.textsize(text, font)
     x_offset = (image.width - text_width) / 2
 
-    draw.text((50, 100), f'#{number}', dark_gray, font)
-    draw.text((x_offset, 210), text, dark_gray, font)
+    draw.text(number_pos, f'#{number}', text_color, font)
+    draw.text((x_offset, text_y_offset), text, text_color, font)
 
     image.save(filename)
