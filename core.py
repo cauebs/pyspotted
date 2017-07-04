@@ -1,6 +1,6 @@
 import pandas as pd
+import textwrap as tw
 from PIL import Image, ImageDraw, ImageFont
-from textwrap import fill
 from os import path
 
 
@@ -34,8 +34,7 @@ def save_image(number, text, filename):
     font = ImageFont.truetype('Merienda-Bold.ttf', 30)
     dark_gray = (51, 51, 51, 255)
 
-    text = '"' + text.strip() + '"'
-    text = fill(text, width=42)
+    text = tw.fill(f'"{text.strip()}"', 42)
 
     text_width, text_height = draw.textsize(text, font)
     x_offset = (image.width - text_width) / 2
