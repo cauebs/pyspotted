@@ -7,7 +7,7 @@ from os import path
 class Application(tk.Frame):
     def __init__(self):
         super().__init__()
-        self.master.title("Spotted UFSC")
+        self.master.title('Spotted UFSC')
         self.master.resizable(width=False, height=False)
         self.create_widgets()
         self.pack()
@@ -21,16 +21,16 @@ class Application(tk.Frame):
         self.input_field.grid(row=0, column=0, columnspan=2, **style)
 
         self.input_button = tk.Button(self)
-        self.input_button["text"] = "Selecionar arquivo de entrada"
-        self.input_button["command"] = self.select_input
+        self.input_button['text'] = 'Selecionar arquivo de entrada'
+        self.input_button['command'] = self.select_input
         self.input_button.grid(row=0, column=2, **style)
 
         self.output_field = tk.Entry(self)
         self.output_field.grid(row=1, column=0, columnspan=2, **style)
 
         self.output_button = tk.Button(self)
-        self.output_button["text"] = "Selecionar diretório de saída"
-        self.output_button["command"] = self.select_output
+        self.output_button['text'] = 'Selecionar diretório de saída'
+        self.output_button['command'] = self.select_output
         self.output_button.grid(row=1, column=2, **style)
 
         self.label_starting_id = tk.Label(self, text='Número inicial:')
@@ -40,14 +40,14 @@ class Application(tk.Frame):
         self.starting_id.grid(row=2, column=1, **style)
 
         self.start_button = tk.Button(self)
-        self.start_button["text"] = "Iniciar"
-        self.start_button["command"] = self.start
+        self.start_button['text'] = 'Iniciar'
+        self.start_button['command'] = self.start
         self.start_button.grid(row=2, column=2, columnspan=3, **style)
 
     def select_input(self):
-        file_types = [("Arquivos do Microsoft Office Excel", "*.xlsx"),
-                      ("Arquivos do Microsoft Office Excel", "*.xls"),
-                      ("Valores separados por vírgula", "*.csv")]
+        file_types = [('Arquivos do Microsoft Office Excel', '*.xlsx'),
+                      ('Arquivos do Microsoft Office Excel', '*.xls'),
+                      ('Valores separados por vírgula', '*.csv')]
         file_path = filedialog.askopenfilename(filetypes=file_types)
 
         self.input_field.delete(0, tk.END)
@@ -105,5 +105,5 @@ class Application(tk.Frame):
             self.enable_fields()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     Application().mainloop()

@@ -14,7 +14,7 @@ def import_text(filename):
         df = pd.read_csv(filename)
 
     else:
-        raise Exception("Formato de arquivo inválido")
+        raise Exception('Formato de arquivo inválido')
 
     df = df.fillna('')
     df.columns = ('datetime', 'text', 'status', 'reason', 'editor', 'number')
