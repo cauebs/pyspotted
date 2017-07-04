@@ -20,9 +20,9 @@ def generate_images(input_file, output_dir):
     df.columns = ('datetime', 'text', 'status', 'reason', 'editor', 'number')
 
     starting_number = int(df.number.max() + 1)
-    texts = df[df.status.isnull()].text.tolist()
+    texts = df[df.status.isnull()].text
 
-    for i, text in enumerate(texts):
+    for i, text in texts.iteritems():
         number = starting_number + i
         save_image(number, text, path.join(output_dir, f'{number}.png'))
 
