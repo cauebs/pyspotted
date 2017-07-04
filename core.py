@@ -1,10 +1,11 @@
 import pandas as pd
 import textwrap
 from PIL import Image, ImageDraw, ImageFont
-from os import path
+import os
+from zipfile import ZipFile
 
 
-def generate_images(input_file, output_dir):
+def import_data(input_file):
     input_file = input_file.lower()
 
     if input_file.endswith('xlsx') or input_file.endswith('xls'):
@@ -17,19 +18,39 @@ def generate_images(input_file, output_dir):
     else:
         raise Exception('Formato de arquivo inválido')
 
-    df.columns = ('datetime', 'text', 'status', 'reason', 'editor', 'number')
+    df.columns.values[:6] = ('datetime', 'text', 'status',
+                             'reason', 'editor', 'number')
 
     starting_number = int(df.number.max() + 1)
     texts = df[df.status.isnull()].text
 
-    for i, text in texts.iteritems():
+    return starting_number, texts.tolist()
+
+
+def generate_images(starting_number, texts, output_dir, zip_files=True):
+    filenames = []
+    for i, text in enumerate(texts):
         number = starting_number + i
-        save_image(number, text, path.join(output_dir, f'{number}.png'))
+        filename = os.path.join(output_dir, f'{number}.png')
+        save_image(number, text, filename)
+        filenames.append(filename)
+
+    if not zip_files:
+        return filenames
+
+    filename, _ = os.path.splitext(filenames[0])
+    filename = f'{filename}.zip'
+    with ZipFile(filename, 'w') as archive:
+        for file in filenames:
+            archive.write(file)
+
+    return filename
 
 
 def save_image(number, text, filename, background='bg.jpg', font_size=30,
                font_face='Merienda-Bold.ttf', text_color=(51, 51, 51, 255),
-               column_limit=42, number_pos=(50, 100), text_y_offset=210):
+               align='center', column_limit=42, spacing=0,
+               number_pos=(50, 100), text_y_offset=210):
     image = Image.open(background).convert('RGBA')
 
     draw = ImageDraw.Draw(image)
