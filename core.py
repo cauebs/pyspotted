@@ -1,24 +1,30 @@
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import fill
+from os import path
 
 
-def import_text(filename):
-    filename = filename.lower()
+def generate_images(input_file, output_dir):
+    input_file = input_file.lower()
 
-    if filename.endswith('xlsx') or filename.endswith('xls'):
-        df = pd.read_excel(filename)
+    if input_file.endswith('xlsx') or input_file.endswith('xls'):
+        df = pd.read_excel(input_file)
         df = df.reset_index()
 
-    elif filename.endswith('csv'):
-        df = pd.read_csv(filename)
+    elif input_file.endswith('csv'):
+        df = pd.read_csv(input_file)
 
     else:
         raise Exception('Formato de arquivo inválido')
 
-    df = df.fillna('')
     df.columns = ('datetime', 'text', 'status', 'reason', 'editor', 'number')
-    # do something
+
+    starting_number = int(df.number.max() + 1)
+    texts = df[df.status.isnull()].text.tolist()
+
+    for i, text in enumerate(texts):
+        number = starting_number + i
+        save_image(number, text, path.join(output_dir, f'{number}.png'))
 
 
 def save_image(number, text, filename):
@@ -29,9 +35,12 @@ def save_image(number, text, filename):
     dark_gray = (51, 51, 51, 255)
 
     text = '"' + text.strip() + '"'
-    text = fill(text, width=45)
+    text = fill(text, width=42)
+
+    text_width, text_height = draw.textsize(text, font)
+    x_offset = (image.width - text_width) / 2
 
     draw.text((50, 100), f'#{number}', dark_gray, font)
-    draw.text((50, 210), text, dark_gray, font)
+    draw.text((x_offset, 210), text, dark_gray, font)
 
     image.save(filename)
